@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) DNDDragOperation *currentDragOperation;
 @property (nonatomic, assign) BOOL isCancelled;
+@property (nonatomic, assign) CGPoint centerShift;
 
 @end
 
@@ -75,9 +76,14 @@
         return;
     }
     
+    CGPoint draggingCenterPoint = [recognizer locationInView:self.controller.dragPaneView];
+    CGPoint dragViewCenterPoint = self.dragSourceView.center;
+    
+    self.centerShift = CGPointMake(draggingCenterPoint.x - dragViewCenterPoint.x, draggingCenterPoint.y - dragViewCenterPoint.y);
+    
     self.currentDragOperation.draggingView = dragView;
     [self.controller.dragPaneView addSubview:dragView];
-    dragView.center = [recognizer locationInView:self.controller.dragPaneView];
+    dragView.center = self.dragSourceView.center;
 }
 
 - (void)updateDraggingForGestureRecognizer:(UIGestureRecognizer *)recognizer {
@@ -97,7 +103,8 @@
     }
     
     if ([self shouldPositionInDropTarget:self.currentDragOperation.dropTargetView]) {
-        self.currentDragOperation.draggingView.center = [recognizer locationInView:self.controller.dragPaneView];
+        CGPoint draggingCenterPoint = [recognizer locationInView:self.controller.dragPaneView];
+        self.currentDragOperation.draggingView.center = CGPointMake(draggingCenterPoint.x - self.centerShift.x, draggingCenterPoint.y - self.centerShift.y);
     }
 }
 
