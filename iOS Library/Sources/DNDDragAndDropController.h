@@ -139,6 +139,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)dragOperationWillCancel:(DNDDragOperation *)operation;
 
+@optional
+
+/**
+ Optionally provide source view center point for drag animation.
+ 
+ This method used to calculcate dragging point to source view center point
+ for dragging view animation.
+ 
+ @prarm operation The drag operation needing the drag view.
+ @return CGPoint to determine where is the source view center point.
+ */
+- (CGPoint)sourceViewCenterForDragOperation:(DNDDragOperation *)operation;
+
 @end
 
 

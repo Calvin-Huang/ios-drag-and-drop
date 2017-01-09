@@ -39,6 +39,7 @@
         _dragSourceView = source;
         _dragDelegate = delegate;
         _dragRecognizer = dragRecognizer;
+        _centerShift = CGPointZero;
         [_dragSourceView addGestureRecognizer:_dragRecognizer];
         
         [dragRecognizer addTarget:self action:@selector(handleDragGesture:)];
@@ -70,20 +71,25 @@
     self.currentDragOperation.dragLocation = [recognizer locationInView:self.controller.dragPaneView];
     self.isCancelled = NO;
     
+    CGPoint draggingCenterPoint = [recognizer locationInView:self.controller.dragPaneView];
+    
+    if ([self.dragDelegate respondsToSelector:@selector(sourceViewCenterForDragOperation:)]) {
+        CGPoint viewCenter = [self.dragDelegate sourceViewCenterForDragOperation:self.currentDragOperation];
+        
+        NSLog(@"viewCenter: %@", NSStringFromCGPoint(viewCenter));
+        
+        self.centerShift = CGPointMake(draggingCenterPoint.x - viewCenter.x, draggingCenterPoint.y - viewCenter.y);
+    }
+    
     UIView *dragView = [self.dragDelegate draggingViewForDragOperation:self.currentDragOperation];
     if (dragView == nil) {
         [self cancelDragging];
         return;
     }
     
-    CGPoint draggingCenterPoint = [recognizer locationInView:self.controller.dragPaneView];
-    CGPoint dragViewCenterPoint = self.dragSourceView.center;
-    
-    self.centerShift = CGPointMake(draggingCenterPoint.x - dragViewCenterPoint.x, draggingCenterPoint.y - dragViewCenterPoint.y);
-    
     self.currentDragOperation.draggingView = dragView;
     [self.controller.dragPaneView addSubview:dragView];
-    dragView.center = self.dragSourceView.center;
+    dragView.center = CGPointMake(draggingCenterPoint.x - self.centerShift.x, draggingCenterPoint.y - self.centerShift.y);
 }
 
 - (void)updateDraggingForGestureRecognizer:(UIGestureRecognizer *)recognizer {
@@ -104,7 +110,9 @@
     
     if ([self shouldPositionInDropTarget:self.currentDragOperation.dropTargetView]) {
         CGPoint draggingCenterPoint = [recognizer locationInView:self.controller.dragPaneView];
-        self.currentDragOperation.draggingView.center = CGPointMake(draggingCenterPoint.x - self.centerShift.x, draggingCenterPoint.y - self.centerShift.y);
+        CGPoint centerShift = self.centerShift;
+        
+        self.currentDragOperation.draggingView.center = CGPointMake(draggingCenterPoint.x - centerShift.x, draggingCenterPoint.y - centerShift.y);
     }
 }
 
