@@ -76,8 +76,6 @@
     if ([self.dragDelegate respondsToSelector:@selector(sourceViewCenterForDragOperation:)]) {
         CGPoint viewCenter = [self.dragDelegate sourceViewCenterForDragOperation:self.currentDragOperation];
         
-        NSLog(@"viewCenter: %@", NSStringFromCGPoint(viewCenter));
-        
         self.centerShift = CGPointMake(draggingCenterPoint.x - viewCenter.x, draggingCenterPoint.y - viewCenter.y);
     }
     
