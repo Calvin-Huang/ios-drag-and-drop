@@ -89,6 +89,8 @@
     
     self.currentDragOperation.dragLocation = [recognizer locationInView:self.controller.dragPaneView];
     
+    [self notifyDraggingInTarget];
+    
     UIView *dropTarget = [self dropTargetAtLocation:[recognizer locationInView:self.controller.dragPaneView]];
     if (dropTarget != self.currentDragOperation.dropTargetView) {
         [self switchCurrentDropTargetToView:dropTarget];
@@ -161,6 +163,13 @@
     id<DNDDropTargetDelegate> delegate = [self.controller delegateForDropTarget:self.currentDragOperation.dropTargetView];
     if ([delegate respondsToSelector:@selector(dragOperation:didEnterDropTarget:)]) {
         [delegate dragOperation:self.currentDragOperation didEnterDropTarget:self.currentDragOperation.dropTargetView];
+    }
+}
+
+- (void)notifyDraggingInTarget {
+    id<DNDDropTargetDelegate> delegate = [self.controller delegateForDropTarget:self.currentDragOperation.dropTargetView];
+    if ([delegate respondsToSelector:@selector(dragOperation:draggingInTarget:)]) {
+        [delegate dragOperation:self.currentDragOperation draggingInTarget:self.currentDragOperation.dropTargetView];
     }
 }
 
