@@ -53,6 +53,12 @@
     return view;
 }
 
+- (CGPoint)sourceViewCenterForDragOperation:(DNDDragOperation *)operation {
+    DNDStackSampleView *stackView = (DNDStackSampleView *)operation.dragSourceView;
+    UIView *view = [stackView stackedViewAtPoint:[operation locationInView:stackView]];
+    return [stackView convertPoint:view.center toView:self.view];
+}
+
 - (void)dragOperationWillCancel:(DNDDragOperation *)operation {
     DNDStackSampleView *stackView = (DNDStackSampleView *)operation.dragSourceView;
     operation.draggingView.center = [operation locationInView:stackView];
