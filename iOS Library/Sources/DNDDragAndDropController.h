@@ -173,6 +173,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dragOperation:(DNDDragOperation *)operation didEnterDropTarget:(UIView *)target;
 
 /**
+ Optional notification when the user drgging in the target.
+ 
+ @param operation The current drag operation
+ @param target    The current target which dragging in
+ */
+- (void)dragOperation:(DNDDragOperation *)operation draggingInTarget:(UIView *)target;
+
+/**
  Optional notification when the user leaves a drop target during a drag operation.
  
  @param operation The current drag operation
